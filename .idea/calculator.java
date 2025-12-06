@@ -1,8 +1,6 @@
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.PrintStream;
-import java.util.Scanner;
 class Main extends JFrame {
 
     int counter = 0;
@@ -11,23 +9,26 @@ class Main extends JFrame {
         super("My title");
         setBounds(500, 200, 1000, 500);
         setLayout(null);
-
-        JButton btn = new JButton("1");
-        btn.setBounds(100, 100, 50, 50);
-
+        String S = "0123456789+=";
         JTextField textField = new JTextField();
         textField.setBounds(50, 50, 300, 50);
-
-        btn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                counter++;
-                textField.setText(textField.getText() + counter);
-            }
-        });
-
-        add(btn);
         add(textField);
+        for (int x = 0; x<10; x++)
+        {
+            JButton btn = new JButton(toString();
+            btn.setBounds(100+x*10, 100+x*10, 50, 50);
+            btn.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    counter++;
+                    textField.setText(textField.getText() + counter);
+
+                }
+            });
+            add(btn);
+        }
+
+
 
 
     }
