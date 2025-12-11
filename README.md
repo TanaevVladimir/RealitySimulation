@@ -1,3 +1,3 @@
 Vladimir Tanaev
-Realistic Revolution Simulation
+Reality Simulation
 06.12.2025
