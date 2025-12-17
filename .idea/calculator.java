@@ -50,38 +50,49 @@ class Main extends JFrame {
 
     public static String count (String str)
     {
-        if (str.equals("ERROR"))
-            return "0";
+        if (str.equals("Infinity"))
+            return "0.0";
         int i = 0;
         int a = 0;
         int b = 0;
         double answ = 0;
-        while (i<str.length()){
-            while (i<str.length() && str.charAt(i) >= '0' && str.charAt(i) <= '9') {
+        while (i<str.length()) {
+            while (i<str.length() && (str.charAt(i) >= '0' && str.charAt(i) <= '9' || str.charAt(i) == '.')) {
                 i++;
             }
-            b = i-1;
-            if (a == 0 || str.charAt(a-1) == '+')
-                answ += toDigit(str, a, b);
-            else if (str.charAt(a-1) == '-')
-                answ -= toDigit(str, a, b);
-            else if (str.charAt(a-1) == '*')
-                answ *= toDigit(str, a, b);
-            else if (str.charAt(a-1) == '÷')
-                answ /= toDigit(str, a, b);
+            b = i;
+            if (a == 0 || str.charAt(a - 1) == '+')
+                answ += Double.parseDouble(str.substring(a, b));
+            else if (str.charAt(a - 1) == '-')
+                answ -= Double.parseDouble(str.substring(a, b));
+            else if (str.charAt(a - 1) == '*')
+                answ *= Double.parseDouble(str.substring(a, b));
+            else if (str.charAt(a - 1) == '÷')
+                answ /= Double.parseDouble(str.substring(a, b));
             else
-                return "ERROR";
+                return answ + "";
             i++;
             a = i;
         }
-        return (int)answ +"";
+        return answ + "";
     }
 
-    public static int toDigit (String str, int a, int b)
+    public static int toDigit (String str, int a, int c)
     {
         int n = 0;
-        for (int i=a; i<=b; i++)
-            n+=(str.charAt(i)-'0')*(int)Math.pow(10,b-i);
+        for (int i=a; i<=c; i++)
+            n+=(str.charAt(i)-'0')*(int)Math.pow(10,c-i);
+        return n;
+    }
+
+    public static double toDigit (String str, int a, int b, int c)
+    {
+        double n = 0;
+        for (int i=a; i<=c; i++)
+            if (i==b)
+                n+=0;
+            else
+                n+=(str.charAt(i)-'0')*Math.pow(10,b-i-1);
         return n;
     }
 
