@@ -95,6 +95,58 @@ class Main extends JFrame {
                 n+=(str.charAt(i)-'0')*Math.pow(10,b-i-1);
         return n;
     }
+    public static String count1 (String str)
+    {
+        int[] mas = new int[str.length()];
+        boolean flag = true;
+        for (int i=0; i<mas.length; i++)
+        {
+            if (str.charAt(i)=="+" || str.charAt(i)=="-")
+            {
+                mas[i] = 1;
+                flag = false;
+            }
+            else if (str.charAt(i)=="*" || str.charAt(i)=="÷") {
+                mas[i] = 2;
+                flag = false;
+            }
+            else
+                mas[i] = 0;
+        }
+        if (flag)
+            return str;
+        else {
+            int k = 0;
+            while (k < mas.length && mas[k] != 2)
+                k++;
+            if (k < mas.length) {
+                int a = k+1;
+                while (a < mas.length && mas[a] == 0)
+                    a++;
+                int b = k-1;
+                while (b >= 0 && mas[b] == 0)
+                    b--;
+                if (a==mas.length && b==0)
+                    return Double.parseDouble(str.substring(a, k)) + Double.parseDouble(str.substring(k+1, b)) + "";
+                else-if {
+
+                }
+                return count(str.substring(0, a)) + Double;
+            } else {
+                k = 0;
+                while (mas[k] == 0 && k < mas.length)
+                    k++;
+                int a = k;
+                while (mas[a] == 0 && a < mas.length)
+                    ++;
+                int b = k;
+                while (mas[b] == 0 && b >= 0)
+                    b--;
+                return count(str.substring(0, a);
+
+            }
+        }
+    }
 
     public static void main(String[] args) {
         Main app = new Main();
