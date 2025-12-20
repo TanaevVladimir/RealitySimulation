@@ -26,12 +26,16 @@ class Main extends JFrame {
                     else if (x<14)
                     {
                         int l = textField.getText().length();
-                        if(l>0 && textField.getText().charAt(l-1) != S.charAt(x))
+                        if(l>0 && !S.substring(10,15).contains(textField.getText().charAt(l-1)+""))
                             textField.setText(textField.getText() + S.charAt(x));
                     }
                     else if (x==14)
                     {
-                        textField.setText(count(textField.getText()));
+                        int l = textField.getText().length();
+                        if (S.substring(10,15).contains(textField.getText().charAt(l-1)+""))
+                            textField.setText(textField.getText().substring(0,l-1));
+                        else
+                            textField.setText(count(textField.getText()));
                     }
                     else if (x==15)
                     {
