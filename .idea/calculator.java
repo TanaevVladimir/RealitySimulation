@@ -48,11 +48,13 @@ class Main extends JFrame {
         }
     }
 
-    public static String count (String str)
+    public static String countold (String str)
     {
         if (str.equals("Infinity"))
             return "0.0";
         int i = 0;
+        if (str.charAt(i)=='-')
+            i = 1;
         int a = 0;
         int b = 0;
         double answ = 0;
@@ -61,28 +63,26 @@ class Main extends JFrame {
                 i++;
             }
             b = i;
-            if (a == 0 || str.charAt(a - 1) == '+')
+            if (a == 0)
                 answ += Double.parseDouble(str.substring(a, b));
-            else if (str.charAt(a - 1) == '-')
-                answ -= Double.parseDouble(str.substring(a, b));
-            else if (str.charAt(a - 1) == '*')
-                answ *= Double.parseDouble(str.substring(a, b));
-            else if (str.charAt(a - 1) == '÷')
-                answ /= Double.parseDouble(str.substring(a, b));
             else
-                return answ + "";
+                answ = calc(answ,Double.parseDouble(str.substring(a, b)),str.charAt(a-1));
             i++;
             a = i;
         }
         return answ + "";
     }
 
-    public static int toDigit (String str, int a, int c)
+    public static double calc (double a, double b, char ch)
     {
-        int n = 0;
-        for (int i=a; i<=c; i++)
-            n+=(str.charAt(i)-'0')*(int)Math.pow(10,c-i);
-        return n;
+        if (ch=='+')
+            return a+b;
+        else if (ch=='-')
+            return a-b;
+        else if (ch=='*')
+            return a*b;
+        else
+            return a/b;
     }
 
     public static double toDigit (String str, int a, int b, int c)
@@ -95,18 +95,18 @@ class Main extends JFrame {
                 n+=(str.charAt(i)-'0')*Math.pow(10,b-i-1);
         return n;
     }
-    public static String count1 (String str)
+    public static String count (String str)
     {
         int[] mas = new int[str.length()];
         boolean flag = true;
         for (int i=0; i<mas.length; i++)
         {
-            if (str.charAt(i)=="+" || str.charAt(i)=="-")
+            if (str.charAt(i)=='+' || str.charAt(i)=='-')
             {
                 mas[i] = 1;
                 flag = false;
             }
-            else if (str.charAt(i)=="*" || str.charAt(i)=="÷") {
+            else if (str.charAt(i)=='*' || str.charAt(i)=='÷') {
                 mas[i] = 2;
                 flag = false;
             }
@@ -120,31 +120,24 @@ class Main extends JFrame {
             while (k < mas.length && mas[k] != 2)
                 k++;
             if (k < mas.length) {
-                int a = k+1;
-                while (a < mas.length && mas[a] == 0)
-                    a++;
-                int b = k-1;
-                while (b >= 0 && mas[b] == 0)
-                    b--;
-                if (a==mas.length && b==0)
-                    return Double.parseDouble(str.substring(a, k)) + Double.parseDouble(str.substring(k+1, b)) + "";
-                else-if {
-
-                }
-                return count(str.substring(0, a)) + Double;
-            } else {
-                k = 0;
-                while (mas[k] == 0 && k < mas.length)
-                    k++;
-                int a = k;
-                while (mas[a] == 0 && a < mas.length)
-                    ++;
-                int b = k;
-                while (mas[b] == 0 && b >= 0)
-                    b--;
-                return count(str.substring(0, a);
+                int a = k-1;
+                while (a >= 0 && mas[a] == 0)
+                    a--;
+                int b = k+1;
+                while (b < mas.length && mas[b] == 0)
+                    b++;
+                if (a==-1 && b==mas.length)
+                    return calc(Double.parseDouble(str.substring(0, k)), Double.parseDouble(str.substring(k+1,b)),str.charAt(k)) + "";
+                else if (a==-1)
+                    return count(calc(Double.parseDouble(str.substring(0, k)), Double.parseDouble(str.substring(k+1, b)),str.charAt(k)) + str.substring(b));
+                else if (b==mas.length)
+                    return count(str.substring(0,a+1)+calc(Double.parseDouble(str.substring(a+1, k)), Double.parseDouble(str.substring(k+1, b)),str.charAt(k)));
+                else
+                    return count(str.substring(0,a+1) + calc(Double.parseDouble(str.substring(a+1, k)), Double.parseDouble(str.substring(k+1, b)),str.charAt(k)) + str.substring(b));
 
             }
+            else
+                return countold(str);
         }
     }
 
