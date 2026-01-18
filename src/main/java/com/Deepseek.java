@@ -23,13 +23,13 @@ public class Deepseek {
     private static void chat(String apiKey, Scanner scanner) throws IOException {
         while (true) {
             System.out.print("Вы: ");
-            String input = scanner.nextLine().trim(); // Читаем строку, убираем пробелы
-            if (input.isEmpty()) continue; // Пропускаем пустой ввод
+            String input = scanner.nextLine().trim();
+            if (input.isEmpty()) continue;
             if (input.startsWith("/")) {
                 if (!processCommand(input, scanner)) {
-                    break; // Если команда выхода, прерываем цикл
+                    break;
                 }
-                continue; // Переходим к следующей итерации
+                continue;
             }
                 System.out.println("Запрос...");
                 String answer = sendRequest(apiKey, input);
@@ -67,7 +67,6 @@ public class Deepseek {
 
         requestBody.add("messages", messages);
 
-        // Создаем HTTP запрос с заголовками OpenRouter
         Request request = new Request.Builder()
                 .url(API_URL)
                 .post(RequestBody.create(
