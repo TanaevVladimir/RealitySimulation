@@ -88,6 +88,14 @@ public class Deepseek {
                     .getAsJsonObject("message")
                     .get("content").getAsString();
             }
+
+            public static String price (String product) throws IOException {
+                Dotenv dotenv = Dotenv.load();
+                String apiKey = dotenv.get("API_KEY");
+                String comment = "В следующем сообщении отправь цену продукта в долларах. Продукт: ";
+                String answer = sendRequest(apiKey, comment + product);
+                return answer;
+            }
         }
 
 
