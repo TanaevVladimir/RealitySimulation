@@ -11,8 +11,7 @@ public class Deepseek {
     private static final OkHttpClient client = new OkHttpClient();
     private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
     public static void main(String[] args) {
-        Dotenv dotenv = Dotenv.load();
-        String apiKey = dotenv.get("API_KEY");
+        String apiKey = getkey(1);
         try (Scanner scanner = new Scanner(System.in)) {
             chat(apiKey, scanner);
         } catch (IOException e) {
@@ -90,11 +89,22 @@ public class Deepseek {
             }
 
             public static String price (String product) throws IOException {
-                Dotenv dotenv = Dotenv.load();
-                String apiKey = dotenv.get("API_KEY");
-                String comment = "В следующем сообщении отправь цену продукта в долларах. Продукт: ";
-                String answer = sendRequest(apiKey, comment + product);
+                String apiKey = getkey(2);
+                String answer = sendRequest(apiKey,product);
                 return answer;
+            }
+
+            public static void shopstart() throws IOException {
+                String apiKey = getkey(2);
+                String comment = "Ты - продавец товаров. На основе данных из интернета и предоставленного ниже списка цен, тебе необходимо рассчитывать стоимоть продукта пользователя в долларах. В дальнейшем отвечай на запрос только числом, без дополнительных комментариев. Число должно отражать цену продукта. Если продукт есть в списке, верни значение цены из него, если нет - рассчитай. Если ты рассчитал цену на продукт, при повторном запросе этого же продукта ты должен вернуть ту же цену.";
+                String pricelist = "Цены: \n Яблоко - 10$\n ";
+                String answer = sendRequest(apiKey, comment+"\n"+pricelist);
+            }
+
+            public static String getkey (int n) {
+                Dotenv dotenv = Dotenv.load();
+                String apiKey = dotenv.get("API_KEY"+n);
+                return apiKey;
             }
         }
 

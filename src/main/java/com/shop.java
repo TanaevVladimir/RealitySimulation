@@ -29,8 +29,9 @@ public class shop extends JFrame {
             add(btn);
         }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         shop app = new shop();
         app.setVisible(true);
+        Deepseek.shopstart();
     }
 }
