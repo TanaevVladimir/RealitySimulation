@@ -23,8 +23,7 @@ public class menu extends JFrame {
             public void actionPerformed(ActionEvent e) {
                     btn.setEnabled(false);
                     AlisaAI.main(null);
-                    ArrayList<String> text = new ArrayList<>;
-                    text = AlisaAI.field;
+                    ArrayList<String> text = AlisaAI.field;
                     while(true)
                     {
                         while (text == AlisaAI.field) {}
