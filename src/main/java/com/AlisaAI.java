@@ -7,11 +7,15 @@ import okhttp3.*;
 import java.io.IOException;
 import java.util.Scanner;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class AlisaAI {
     private static final String API_URL = "https://llm.api.cloud.yandex.net/foundationModels/v1/completion";
     private static String currentModel = "yandexgpt-lite";
     private static final OkHttpClient client = new OkHttpClient();
     private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    public static ArrayList<String> field;
     public static void main(String[] args) {
         String folderId = getEnv("YANDEX_FOLDER_ID");
         String apiKey = getEnv("YANDEX_API_KEY");
