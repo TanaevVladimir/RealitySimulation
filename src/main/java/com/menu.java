@@ -16,22 +16,30 @@ public class menu extends JFrame {
         JTextField textField = new JTextField();
         textField.setBounds(100, 40, 300, 70);
         add(textField);
-        JButton btn = new JButton("Гулять");
-        btn.setBounds(200 , 150 , 100, 50);
-        btn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                    btn.setEnabled(false);
-                    AlisaAI.main(null);
-                    ArrayList<String> text = AlisaAI.field;
-                    while(true)
-                    {
-                        while (text == AlisaAI.field) {}
-                        textField.setText(textField.getText()+AlisaAI.field.get(text.size()));
+        for (int i = 0; i<3; i++)
+        {
+            int x = i;
+            String[] mas = new String [10];
+            for (int j=0; j<10; j++)
+                mas[j]=j+1+"";
+            JButton btn = new JButton(mas[i]);
+            btn.setBounds(100*(1+i%3), 90, 100, 50);
+            btn.addActionListener( new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if (x==0) {
+                        btn.setEnabled(false);
                     }
-            }
-        });
-        add(btn);
+                    else if (x==1) {
+                        btn.setEnabled(false);
+                        AlisaAI.main(null);
+                    }
+
+
+                }
+            });
+            add(btn);
+        }
     }
 
     public static void main(String[] args) throws IOException {

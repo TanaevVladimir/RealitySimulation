@@ -15,7 +15,7 @@ public class AlisaAI {
     private static String currentModel = "yandexgpt-lite";
     private static final OkHttpClient client = new OkHttpClient();
     private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    public static ArrayList<String> field;
+    public static ArrayList<JsonObject> messageHistory = new ArrayList<>();
     public static void main(String[] args) {
         String folderId = getEnv("YANDEX_FOLDER_ID");
         String apiKey = getEnv("YANDEX_API_KEY");
@@ -42,10 +42,10 @@ public class AlisaAI {
                 }
                 continue;
             }
-
+            String systemMessage = "";
             System.out.println("⏳ Запрос к YandexGPT...");
             long start = System.currentTimeMillis();
-            String answer = sendRequest(apiKey, modelUri, input);
+            String answer = sendRequest(apiKey, modelUri, systemMessage,input);
             long time = System.currentTimeMillis() - start;
 
             System.out.println("🤖 YandexGPT (за " + time + " мс):");
@@ -70,37 +70,63 @@ public class AlisaAI {
         return true;
     }
 
-    private static String sendRequest(String apiKey, String modelUri, String message) throws IOException {
+    private static String sendRequest(String apiKey, String modelUri, String systemMsg, String userMsg) throws IOException {
         JsonObject requestBody = new JsonObject();
         requestBody.addProperty("modelUri", modelUri);
+
         JsonObject completionOptions = new JsonObject();
         completionOptions.addProperty("stream", false);
-        completionOptions.addProperty("temperature", 0.6);
-        completionOptions.addProperty("maxTokens", 2000);
+        completionOptions.addProperty("temperature", 0.3); // для магазина
+        completionOptions.addProperty("maxTokens", 500);
         requestBody.add("completionOptions", completionOptions);
-        JsonArray messages = new JsonArray();
-        JsonObject userMessage = new JsonObject();
-        userMessage.addProperty("role", "user");
-        userMessage.addProperty("text", message);
-        messages.add(userMessage);
-        requestBody.add("messages", messages);
+        JsonArray messagesToSend = new JsonArray();
+        JsonObject system = new JsonObject();
+        system.addProperty("role", "system");
+        system.addProperty("text", systemMsg);
+        messagesToSend.add(system);
+
+        for (JsonObject pastMessage : messageHistory) {
+            messagesToSend.add(pastMessage);
+        }
+
+        JsonObject user = new JsonObject();
+        user.addProperty("role", "user");
+        user.addProperty("text", userMsg);
+        messagesToSend.add(user);
+
+        messageHistory.add(user);
+
+        requestBody.add("messages", messagesToSend);
+
         Request request = new Request.Builder()
                 .url(API_URL)
-                .post(RequestBody.create(
-                        gson.toJson(requestBody),
-                        MediaType.parse("application/json; charset=utf-8")
-                ))
+                .post(RequestBody.create(gson.toJson(requestBody), MediaType.parse("application/json")))
                 .addHeader("Authorization", "Api-Key " + apiKey)
                 .addHeader("Content-Type", "application/json")
                 .build();
-        Response response = client.newCall(request).execute();
-        String responseBody = response.body().string();
-        JsonObject jsonResponse = JsonParser.parseString(responseBody).getAsJsonObject();
-        return jsonResponse.getAsJsonObject("result")
-                .getAsJsonArray("alternatives")
-                .get(0).getAsJsonObject()
-                .getAsJsonObject("message")
-                .get("text").getAsString();
+
+        try (Response response = client.newCall(request).execute()) {
+            String responseBody = response.body().string();
+            JsonObject jsonResponse = JsonParser.parseString(responseBody).getAsJsonObject();
+
+            if (jsonResponse.has("error")) {
+                JsonObject error = jsonResponse.getAsJsonObject("error");
+                String errorMsg = error.has("message") ? error.get("message").getAsString() : "Unknown error";
+                throw new IOException("API error: " + errorMsg);
+            }
+
+            JsonObject result = jsonResponse.getAsJsonObject("result");
+            JsonArray alternatives = result.getAsJsonArray("alternatives");
+            JsonObject firstAlt = alternatives.get(0).getAsJsonObject();
+            JsonObject messageObj = firstAlt.getAsJsonObject("message");
+            String answer = messageObj.get("text").getAsString();
+
+            JsonObject assistant = new JsonObject();
+            assistant.addProperty("role", "assistant");
+            assistant.addProperty("text", answer);
+            messageHistory.add(assistant);
+            return answer;
+        }
     }
 
     public static String getEnv(String key) {
