@@ -4,14 +4,18 @@ import io.github.cdimascio.dotenv.Dotenv;
 import okhttp3.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Scanner;
 public class Deepseek {
     private static final String API_URL = "https://openrouter.ai/api/v1/chat/completions";
-    private static String currentModel = "deepseek/deepseek-chat";
+    private static String currentModel = "qwen/qwen3-235b-a22b";
+    public static ArrayList<String> messages = new ArrayList<>();
     private static final OkHttpClient client = new OkHttpClient();
     private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
     public static void main(String[] args) {
         String apiKey = getkey(1);
+        messages.add("Ты - продавец товаров. На основе данных из интернета и предоставленного ниже списка цен, тебе необходимо рассчитывать стоимоть продукта пользователя в долларах. В дальнейшем отвечай на запрос только числом, без дополнительных комментариев. Число должно отражать цену продукта. Если продукт есть в списке, верни значение цены из него, если нет - рассчитай. Если ты рассчитал цену на продукт, при повторном запросе этого же продукта ты должен вернуть ту же цену.");
+        messages.add("Цены: \n Яблоко - 10$\n ");
         try (Scanner scanner = new Scanner(System.in)) {
             chat(apiKey, scanner);
         } catch (IOException e) {
@@ -31,8 +35,10 @@ public class Deepseek {
                 continue;
             }
                 System.out.println("Запрос...");
-                String answer = sendRequest(apiKey, input);
+                messages.add(input);
+                String answer = sendRequest(apiKey, messages.toString());
                 System.out.println(answer);
+                messages.add(answer);
             }
         }
 

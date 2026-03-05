@@ -32,7 +32,7 @@ public class menu extends JFrame {
                     }
                     else if (x==1) {
                         btn.setEnabled(false);
-                        AlisaAI.main(null);
+                        AlisaAI.shopstart();
                     }
 
 
