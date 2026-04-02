@@ -5,10 +5,12 @@ import io.github.cdimascio.dotenv.Dotenv;
 import okhttp3.*;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+
 
 public class AlisaAI {
     private static final String API_URL = "https://llm.api.cloud.yandex.net/foundationModels/v1/completion";
@@ -16,6 +18,7 @@ public class AlisaAI {
     private static final OkHttpClient client = new OkHttpClient();
     private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
     public static ArrayList<String> messageHistory = new ArrayList<>();
+    public static Map<Integer, ArrayList<String>> history = new HashMap<>();
     public static void main(String[] args) {
         String folderId = getEnv("YANDEX_FOLDER_ID");
         String apiKey = getEnv("YANDEX_API_KEY");
@@ -71,7 +74,7 @@ public class AlisaAI {
         return true;
     }
 
-    private static String sendRequest(String apiKey, String message, String modelUri) throws IOException {
+    public static String sendRequest(String apiKey, String message, String modelUri) throws IOException {
         JsonObject requestBody = new JsonObject();
         requestBody.addProperty("modelUri", modelUri);
 
@@ -144,6 +147,19 @@ public class AlisaAI {
                 "перчатки=10.0, шарф=8.0. Если товара нет в базе, оцени цену сам. Если товар уже был в диалоге, используй ту же цену.";
         messageHistory.add(promt);
         main(null);
+    }
+
+    public static void personstart (String promt) {
+        messageHistory.add(promt);
+        main(null);
+    }
+
+    public static ArrayList<String> loadHistory (int characterId) {
+        return history.get(characterId);
+    }
+
+    public static void saveHistory (int characterId, ArrayList<String> talk) {
+        history.put(characterId,talk);
     }
 
     public static String getEnv(String key) {
