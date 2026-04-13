@@ -6,6 +6,8 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class ChatGUI extends JFrame {
     private JTextArea chatArea;
@@ -15,13 +17,16 @@ public class ChatGUI extends JFrame {
     private String modelUri;
     private java.util.ArrayList<String> messageHistory;
     private int characterId;
-    private Runnable onCloseCallback; // коллбэк для активации кнопки
+    private String npcname;
+    private JLabel reputationLabel;
+    private Runnable onCloseCallback;
 
     public ChatGUI(String apiKey, String folderId, int x, Runnable onCloseCallback) {
         this.apiKey = apiKey;
         this.modelUri = "gpt://" + folderId + "/yandexgpt/rc";
         this.characterId = x;
         this.messageHistory = new java.util.ArrayList<>();
+        this.npcname = getEnv("NAME"+x);
         ArrayList<String> loadedHistory = AlisaAI.loadHistory(characterId);
         if (loadedHistory != null) {
             this.messageHistory.addAll(loadedHistory);
@@ -47,10 +52,70 @@ public class ChatGUI extends JFrame {
     }
 
     private void initUI(int x) {
+        if (x==5)
+        {
+            JButton buyButton = new JButton("Купить");
+            buyButton.setBounds(350, 30, 100, 50);
+            buyButton.addActionListener( new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    try {
+                        String info = AlisaAI.sendRequest(apiKey,getEnv("SHOP") + messageHistory.get(messageHistory.size() - 2),modelUri);
+                        System.out.println(info);
+                        double price = Double.parseDouble(messageHistory.get(messageHistory.size() - 1));
+                        String product = info.substring(0, info.indexOf(';'));
+                        int amount = Integer.parseInt(info.substring(info.indexOf(';')+1));
+                        if (AlisaAI.getBalance()>=price) {
+                            AlisaAI.addtoInventory(product, amount);
+                            AlisaAI.changeBalance(-price);
+                            System.out.println(AlisaAI.getBalance());
+                        }
+                    }
+                    catch (Exception er)
+                    {
+                        er.printStackTrace();
+                    }
+                }
+            });
+            add(buyButton);
+            JButton sellButton = new JButton("Продать");
+            sellButton.setBounds(350, 130, 100, 50);
+            sellButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    try {
+                        String info = AlisaAI.sendRequest(apiKey,getEnv("SHOP") + messageHistory.get(messageHistory.size() - 2),modelUri);
+                        double price = Double.parseDouble(messageHistory.get(messageHistory.size() - 1));
+                        String product = info.substring(0, info.indexOf(';'));
+                        int amount = Integer.parseInt(info.substring(info.indexOf(';')+1));
+                        if (AlisaAI.getBalance() >= price) {
+                            boolean w = AlisaAI.removefromInventory(product,amount);
+                            if (w)
+                                AlisaAI.changeBalance(price / 2);
+                            System.out.println(AlisaAI.getBalance());
+                        }
+                    }
+                    catch (Exception er)
+                    {
+                        er.printStackTrace();
+                    }
+
+                }
+            });
+            add(sellButton);
+
+        }
         setTitle("Персонаж " + x);
         setSize(500, 600);
         setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // важно!
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        reputationLabel = new JLabel();
+        reputationLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        updateReputationDisplay();
+        topPanel.add(reputationLabel);
+        add(topPanel, BorderLayout.NORTH);
 
         chatArea = new JTextArea();
         chatArea.setEditable(false);
@@ -80,11 +145,11 @@ public class ChatGUI extends JFrame {
         inputField.setText("");
         inputField.setEnabled(false);
         sendButton.setEnabled(false);
-
+        updateReputationDisplay();
         SwingWorker<String, Void> worker = new SwingWorker<String, Void>() {
             @Override
             protected String doInBackground() throws Exception {
-                return AlisaAI.sendRequest(apiKey, messageHistory.toString(), modelUri);
+                return AlisaAI.sendRequest(apiKey, messageHistory.toString() + " Текущая репутация: " + AlisaAI.getReputation(characterId), modelUri);
             }
 
             @Override
@@ -92,7 +157,8 @@ public class ChatGUI extends JFrame {
                 try {
                     String response = get();
                     messageHistory.add(response);
-                    appendToChat("Алиса", response);
+                    appendToChat(npcname, response);
+                    updateReputationAfterDialog(userMessage, response);
                 } catch (Exception e) {
                     appendToChat("Ошибка", e.getMessage());
                     e.printStackTrace();
@@ -111,6 +177,21 @@ public class ChatGUI extends JFrame {
             chatArea.append(sender + ": " + message + "\n\n");
             chatArea.setCaretPosition(chatArea.getDocument().getLength());
         });
+    }
+
+    private void updateReputationDisplay() {
+        int rep = AlisaAI.getReputation(characterId);
+        reputationLabel.setText("Репутация: " + rep);
+    }
+
+    private void updateReputationAfterDialog(String userMsg, String assistantMsg) {
+        try {
+            int reputation = AlisaAI.countReputation(apiKey, modelUri, characterId, userMsg, assistantMsg);
+            AlisaAI.saveReputation(characterId, reputation);
+            updateReputationDisplay();
+        } catch (Exception e) {
+            System.out.println("Ошибка при обновлении репутации: " + e.getMessage());
+        }
     }
 
     public static void start(int x, Runnable onCloseCallback) {

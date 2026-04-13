@@ -4,16 +4,33 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9cddf5fd-9d6d-40cc-a5ad-f39691ad4c57" name="Changes" comment="Добавлен клиент для обращения по api токену">
+    <list default="true" id="9cddf5fd-9d6d-40cc-a5ad-f39691ad4c57" name="Changes" comment="сделан основной костяк, осталось ввести систему репутации">
+      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.txt" beforeDir="false" afterPath="$PROJECT_DIR$/README.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/Deepseek.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/Deepseek.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/AlisaAI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/AlisaAI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/ChatGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/ChatGUI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/menu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/menu.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/AlisaAI.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/AlisaAI.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/ChatGUI$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/ChatGUI$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/ChatGUI$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/ChatGUI$2.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/ChatGUI.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/ChatGUI.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/menu$1$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/menu$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/menu$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/menu.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/menu.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/org/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/org/Main.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="PUSH_AUTO_UPDATE" value="true" />
@@ -41,8 +58,11 @@
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
+    &quot;Application.AlisaAI.executor&quot;: &quot;Run&quot;,
+    &quot;Application.ChatGUI.executor&quot;: &quot;Run&quot;,
     &quot;Application.Deepseek.executor&quot;: &quot;Run&quot;,
     &quot;Application.Main.executor&quot;: &quot;Run&quot;,
+    &quot;Application.menu.executor&quot;: &quot;Run&quot;,
     &quot;Application.shop.executor&quot;: &quot;Run&quot;,
     &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
@@ -65,7 +85,20 @@
       <recent name="D:\RealitySimulation\src\main\java\com" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Application.Main">
+    <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="org.Main" />
+      <module name="RealitySimulation" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="shop" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.shop" />
       <module name="Deepseek" />
@@ -81,6 +114,7 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.Main" />
         <item itemvalue="Application.shop" />
       </list>
     </recent_temporary>
@@ -196,7 +230,63 @@
       <option name="project" value="LOCAL" />
       <updated>1768762107072</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="Добавлен клиент для получения цены товара, макет">
+      <option name="closed" value="true" />
+      <created>1769458968108</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1769458968108</updated>
+    </task>
+    <task id="LOCAL-00014" summary="Добавлен клиент для получения цены товара, макет">
+      <option name="closed" value="true" />
+      <created>1769459059118</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1769459059118</updated>
+    </task>
+    <task id="LOCAL-00015" summary="Добавлен клиент для получения цены товара, макет">
+      <option name="closed" value="true" />
+      <created>1769459145054</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1769459145054</updated>
+    </task>
+    <task id="LOCAL-00016" summary="доработан магазин с сториией сообщений, теперь он полностью рабочий">
+      <option name="closed" value="true" />
+      <created>1772732068056</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1772732068056</updated>
+    </task>
+    <task id="LOCAL-00017" summary="правки10">
+      <option name="closed" value="true" />
+      <created>1772732191297</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1772732191297</updated>
+    </task>
+    <task id="LOCAL-00018" summary="сделан основной костяк, осталось ввести систему репутации">
+      <option name="closed" value="true" />
+      <created>1775163663557</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1775163663557</updated>
+    </task>
+    <task id="LOCAL-00019" summary="сделан основной костяк, осталось ввести систему репутации">
+      <option name="closed" value="true" />
+      <created>1775163762437</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1775163762437</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -208,6 +298,20 @@
     <MESSAGE value="правки8" />
     <MESSAGE value="env1" />
     <MESSAGE value="Добавлен клиент для обращения по api токену" />
-    <option name="LAST_COMMIT_MESSAGE" value="Добавлен клиент для обращения по api токену" />
+    <MESSAGE value="Добавлен клиент для получения цены товара, макет" />
+    <MESSAGE value="доработан магазин с сториией сообщений, теперь он полностью рабочий" />
+    <MESSAGE value="правки10" />
+    <MESSAGE value="сделан основной костяк, осталось ввести систему репутации" />
+    <option name="LAST_COMMIT_MESSAGE" value="сделан основной костяк, осталось ввести систему репутации" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <breakpoint enabled="true" type="java-exception">
+          <properties class="java.lang.StringIndexOutOfBoundsException" package="java.lang" />
+          <option name="timeStamp" value="1" />
+        </breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

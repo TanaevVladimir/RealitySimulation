@@ -14,11 +14,14 @@ import java.util.ArrayList;
 
 public class AlisaAI {
     private static final String API_URL = "https://llm.api.cloud.yandex.net/foundationModels/v1/completion";
-    private static String currentModel = "yandexgpt/rc";
+    private static String currentModel = "yandexgpt/latest";
     private static final OkHttpClient client = new OkHttpClient();
     private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
     public static ArrayList<String> messageHistory = new ArrayList<>();
     public static Map<Integer, ArrayList<String>> history = new HashMap<>();
+    private static Map<Integer, Integer> reputationStorage = new HashMap<>();
+    private static ArrayList<Item> Inventory = new ArrayList<>();
+    private static double balance = 1000;
     public static void main(String[] args) {
         String folderId = getEnv("YANDEX_FOLDER_ID");
         String apiKey = getEnv("YANDEX_API_KEY");
@@ -161,6 +164,83 @@ public class AlisaAI {
     public static void saveHistory (int characterId, ArrayList<String> talk) {
         history.put(characterId,talk);
     }
+
+    public static int getReputation (int characterId) {
+        if (reputationStorage.get(characterId) != null) {
+            return reputationStorage.get(characterId);
+        }
+        return 50;
+    }
+
+    public static void saveReputation (int characterId, int reputation) {
+        reputationStorage.put(characterId, reputation);
+    }
+
+    public static int countReputation (String apikey, String modelUri, int characterId, String userMsg, String assistantMsg) throws IOException {
+        int currentRep = getReputation(characterId);
+        String prompt = String.format("Репутация: %d. Последний диалог:\nПользователь: %s\nАссистент: %s\nИзменение репутации (число от -10 до +10):",
+                currentRep, userMsg, assistantMsg);
+        String response = sendRequest(apikey, prompt, modelUri);
+        try {
+            return +Integer.parseInt(response.trim());
+        } catch (NumberFormatException e) {
+            return getReputation(characterId);
+        }
+    }
+
+    public static double getBalance () {
+        return balance;
+    }
+
+    public static void changeBalance (double delta) {
+        balance += delta;
+    }
+
+    public static void addtoInventory(String product, int amount) {
+        try {
+        for (Item item : Inventory) {
+            if (item.getName().equals(product))
+            {
+                item.add(amount);
+                return;
+            }
+        }
+        Inventory.add(new Item(product,amount));
+        System.out.println(Inventory);
+        }
+        catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    public static boolean removefromInventory(String product, int amount) {
+        boolean z = false;
+            for (Item item : Inventory) {
+                if (item.getName().equals(product)) {
+                    try {
+                        item.add(-amount);
+                        if (item.getCount()==0)
+                            Inventory.remove(item);
+                        z = true;
+                        break;
+                    } catch (Exception e) {
+                        System.out.println(e);
+                        break;
+                    }
+                }
+            }
+        System.out.println(Inventory);
+        return z;
+    }
+
+    public static String getInventory () {
+        String inventory = "";
+        for (Item item : Inventory) {
+            inventory += item.getName()+" Количество: " + item.getCount()+"\n";
+        }
+        return inventory;
+    }
+
 
     public static String getEnv(String key) {
         try {
